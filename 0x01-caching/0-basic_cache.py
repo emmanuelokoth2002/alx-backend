@@ -8,20 +8,18 @@ from base_caching import BaseCaching
 
 class BasicCache(BaseCaching):
     """
-    BasicCache class
+    A caching system
     """
 
     def __init__(self):
-        ''' Initializes an instance '''
+        """Initializes the class"""
         super().__init__()
 
     def put(self, key, item):
-        ''' Add an item in the cache '''
+        """Adds an item in the cache."""
         if key and item:
             self.cache_data[key] = item
 
     def get(self, key):
-        ''' Get an item by key '''
-        if key in self.cache_data.keys():
-            return self.cache_data.get(key)
-        return None
+        """Gets an item by key."""
+        return self.cache_data.get(key, None)
