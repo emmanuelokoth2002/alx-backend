@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Welcome to Holberton</title>
+</head>
+<body>
+    <p>
+        {% if g.user %}
+            {% trans current_time_is= "The current time is %(current_time)s." %}
+            {{ current_time_is|format(current_time=current_time) }}
+        {% else %}
+            You are not logged in.
+        {% endif %}
+    </p>
+</body>
+</html>
