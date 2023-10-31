@@ -6,8 +6,10 @@
 <body>
     <p>
         {% if g.user %}
+            {% trans logged_in_as="You are logged in as %(username)s." %}
             {{ logged_in_as|format(username=g.user['name']) }}
         {% else %}
+            {% trans not_logged_in="You are not logged in." %}
             {{ not_logged_in }}
         {% endif %}
     </p>
