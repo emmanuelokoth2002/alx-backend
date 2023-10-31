@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Welcome to Holberton</title>
+</head>
+<body>
+    <p>
+        {% if g.user %}
+            {{ logged_in_as|format(username=g.user['name']) }}
+        {% else %}
+            {{ not_logged_in }}
+        {% endif %}
+    </p>
+</body>
+</html>
