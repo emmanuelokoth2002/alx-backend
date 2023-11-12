@@ -1,49 +1,54 @@
 #!/usr/bin/env python3
 '''
-Simple helper function and Server class for paginating a database of popular
-baby names.
+function
 '''
 from typing import Tuple, List
 import csv
+import math
 
 
-def calculate_pagination_indexes(page: int, page_size: int) -> Tuple[int, int]:
-    '''Calculate and return the start and end indexes for pagination.'''
-    start_index = (page - 1) * page_size
-    end_index = page * page_size
-    return start_index, end_index
+def index_range(page: int, page_size: int) -> Tuple[int]:
+    """
+    return a tuple
+    """
+    start = (page - 1) * page_size
+    end = page * page_size
+
+    return (start, end)
 
 
-class BabyNameServer:
-    """Server class for paginating a database of popular baby names.
+class Server:
+    """
+    Server class.
     """
     DATA_FILE = "Popular_Baby_Names.csv"
 
     def __init__(self):
         self.__dataset = None
 
-    def load_dataset(self) -> List[List]:
-        """Load and cache the dataset from the CSV file.
+    def dataset(self) -> List[List]:
+        """
+        Cache dataset
         """
         if self.__dataset is None:
-            with open(self.DATA_FILE) as file:
-                reader = csv.reader(file)
+            with open(self.DATA_FILE) as f:
+                reader = csv.reader(f)
                 dataset = [row for row in reader]
             self.__dataset = dataset[1:]
 
         return self.__dataset
 
-    def get_paginated_data(self, page: int = 1, page_size: int = 10) -> List[List]:
-        '''Retrieve a paginated subset of the dataset.'''
-        assert isinstance(page, int) and page > 0
-        assert isinstance(page_size, int) and page_size > 0
+    def get_page(self, page: int = 1, page_size: int = 10) -> List[List]:
+        ''' page the dataset '''
+        assert type(page) == int and page > 0
+        assert type(page_size) == int and page_size > 0
 
-        start_index, end_index = calculate_pagination_indexes(page, page_size)
-        dataset = self.load_dataset()
-
+        page_range = index_range(page, page_size)
+        start = page_range[0]
+        end = page_range[1]
+        data = self.dataset()
         try:
-            paginated_data = [dataset[i] for i in range(start_index, end_index)]
+            data = [data[i] for i in range(start, end)]
         except IndexError:
-            paginated_data = []
-
-        return paginated_data
+            data = []
+        return data
