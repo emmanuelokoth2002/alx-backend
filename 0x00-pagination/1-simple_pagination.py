@@ -1,68 +1,49 @@
 #!/usr/bin/env python3
-
+'''
+Simple helper function and Server class for paginating a database of popular
+baby names.
+'''
+from typing import Tuple, List
 import csv
-from typing import List
 
 
-def index_range(page: int, page_size: int) -> tuple:
-    """
-    Return a tuple of start and end indexes for pagination.
-
-    Args:
-        page (int): The current page number (1-indexed).
-        page_size (int): The number of items per page.
-
-    Returns:
-        tuple: A tuple containing the start and end indexes
-        for the given page and page_size.
-    """
-    if page <= 0 or page_size <= 0:
-        return (0, 0)  # Invalid input, return an empty range
-
+def calculate_pagination_indexes(page: int, page_size: int) -> Tuple[int, int]:
+    '''Calculate and return the start and end indexes for pagination.'''
     start_index = (page - 1) * page_size
     end_index = page * page_size
-    return (start_index, end_index)
+    return start_index, end_index
 
 
-class Server:
-    """Server class to paginate a database of popular baby names.
+class BabyNameServer:
+    """Server class for paginating a database of popular baby names.
     """
-
     DATA_FILE = "Popular_Baby_Names.csv"
 
     def __init__(self):
         self.__dataset = None
 
-    def dataset(self) -> List[List]:
-        """Cached dataset
+    def load_dataset(self) -> List[List]:
+        """Load and cache the dataset from the CSV file.
         """
         if self.__dataset is None:
-            with open(self.DATA_FILE) as f:
-                reader = csv.reader(f)
+            with open(self.DATA_FILE) as file:
+                reader = csv.reader(file)
                 dataset = [row for row in reader]
             self.__dataset = dataset[1:]
 
         return self.__dataset
 
-    def get_page(self, page: int = 1, page_size: int = 10) -> List[List]:
-        """
-        Retrieve a page of data from the dataset.
-
-        Args:
-            page (int): The page number (1-indexed).
-            page_size (int): The number of items per page.
-
-        Returns:
-            List[List]: The requested page of data, or an empty list if the
-            input is out of range.
-        """
+    def get_paginated_data(self, page: int = 1, page_size: int = 10) -> List[List]:
+        '''Retrieve a paginated subset of the dataset.'''
         assert isinstance(page, int) and page > 0
         assert isinstance(page_size, int) and page_size > 0
 
-        start, end = index_range(page, page_size)
-        dataset = self.dataset()
+        start_index, end_index = calculate_pagination_indexes(page, page_size)
+        dataset = self.load_dataset()
 
-        if start >= len(dataset):
-            return []  # Requested page is out of range
+        try:
+            paginated_data = [dataset[i] for i in range(start_index, end_index)]
+        except IndexError:
+            paginated_data = []
 
-        return dataset[start:end]
+        return paginated_data
