@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+"""
+This module provides a Server class for paginating a database of popular baby
+names. It includes functions for retrieving pages of data and adding
+hypermedia metadata.
+"""
 
 import csv
 import math
